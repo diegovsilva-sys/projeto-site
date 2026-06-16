@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divinity Statue - Conversor</title>
+    <link rel="stylesheet" href="pagina-3.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Divinity Shop</h1>
+        <p class="subtitle">Converta seus Dólares em Reais</p>
+        
+        <div class="form-group">
+            <label for="usd">Valor em Dólar (USD $):</label>
+            <input type="number" id="usd" placeholder="Ex: 100" step="0.01">
+        </div>
+
+        <div class="form-group">
+            <label for="cotacao">Cotação atual do Dólar (R$):</label>
+            <input type="number" id="cotacao" placeholder="Ex: 5.50" step="0.01" value="5.50">
+        </div>
+
+        <button onclick="converterMoeda()">Converter Moedas</button>
+
+        <!-- Painel onde o resultado gótico vai surgir -->
+        <div id="painel-resultado" class="resultado-box" style="display: none;">
+            <span class="label-res">Total Convertido:</span>
+            <span id="resultado" class="valor-res">R$ 0,00</span>
+        </div>
+
+        <!-- Links de navegação entre as páginas do seu projeto -->
+        <div class="navegacao">
+            <a href="pagina-2.html" class="nav-btn">« Voltar</a>
+            <a href="pagina-4.html" class="nav-btn">Próxima »</a>
+        </div>
+    </div>
+    <script src="pagina-3.js"></script>
+</body>
+</html>
