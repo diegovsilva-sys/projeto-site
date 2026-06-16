@@ -4,8 +4,9 @@ function converterMoeda() {
     const painelResultado = document.getElementById('painel-resultado');
     const txtResultado = document.getElementById('resultado');
 
+    // Validação temática em caixa alta
     if (usdInput === '' || cotacaoInput === '') {
-        alert('VALORES INVÁLIDOS. INSIRA AS RED ORBS DE TROCA!');
+        alert('SISTEMA FALHOU: INSIRA AS QUANTIDADES PARA ALIMENTAR A ESTÁTUA DA DIVINDADE!');
         return;
     }
 
@@ -13,22 +14,25 @@ function converterMoeda() {
     const cotacao = Number(cotacaoInput);
     const valorEmReal = usd * cotacao;
 
+    // Conversão de moeda local limpa
     const valorFormatado = valorEmReal.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL'
     });
 
-    // Remove badge antigo se já existir para reiniciar a animação
+    // Limpa e reseta a animação explosiva do badge SSS
     const badgeAntigo = document.querySelector('.rank-badge');
-    if (badgeAntigo) badgeAntigo.remove();
+    if (badgeAntigo) {
+        badgeAntigo.remove();
+    }
 
-    // Cria o selo de Rank Combo SSS dinâmico do Devil May Cry
     const sssBadge = document.createElement('div');
     sssBadge.className = 'rank-badge';
     sssBadge.textContent = 'SSS STYLE!!';
+    
     painelResultado.appendChild(sssBadge);
 
-    // Renderiza e ativa o painel estilizado
+    // Renderiza o total na tela e aciona a animação de impacto 3D do CSS
     txtResultado.textContent = valorFormatado;
-    painelResultado.style.display = 'flex';
+    painelResultado.style.display = 'block';
 }

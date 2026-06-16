@@ -1,231 +1,536 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+/* ==========================================================================
+   1. ARQUIVO CORE & ESTRUTURA GLOBAIS
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+    --bg-dark-core: #030305;
+    --dmc-neon-red: #ff003c;
+    --dmc-crimson: #a30022;
+    --dmc-abyss: #1a0006;
+    --vergil-neon-blue: #00f0ff;
+    --vergil-dark-blue: #005f73;
+    --gold-orb-glow: #ffcc00;
+    --text-white: #ffffff;
+    --text-gray: #9ca3af;
+    --interface-dark: rgba(6, 6, 9, 0.93);
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
-    /* Fundo industrial futurista com linhas de scan simulando HUD do jogo */
-    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(15, 2, 2, 0.95)),
-                radial-gradient(circle, #2a0808 0%, #050508 100%);
-    background-size: cover;
+    background-color: var(--bg-dark-core);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 24px;
     overflow: hidden;
     position: relative;
+    font-family: 'Orbitron', sans-serif;
 }
 
-/* Linhas de varredura analógicas na tela (efeito Menu de Missão) */
+/* ==========================================================================
+   2. PÓS-PROCESSAMENTO GRÁFICO (CRT SCANLINES & VIGNETTE)
+   ========================================================================== */
+.ambient-darkness {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 45%, #220308 0%, #060204 65%, #000000 100%);
+    z-index: 0;
+}
+
+/* Linhas Analógicas CRT Avançadas */
 body::before {
     content: " ";
     display: block;
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 255, 0.01));
-    z-index: 10;
-    background-size: 100% 4px, 6px 100%;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.55) 50%),
+                linear-gradient(90deg, rgba(255, 0, 60, 0.015), rgba(0, 240, 255, 0.015));
+    z-index: 999;
+    background-size: 100% 5px, 6px 100%;
     pointer-events: none;
 }
 
-.container {
-    background: linear-gradient(145deg, #0d0d11 0%, #150505 100%);
-    border: 3px solid transparent;
-    /* Borda com efeito metálico chanfrado */
-    border-image: linear-gradient(135deg, #ff0055, #222, #00d2ff) 1;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 
-                0 0 30px rgba(255, 0, 85, 0.15);
-    padding: 35px 30px;
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-    position: relative;
+.vignette-heavy {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.85) 80%, #000 100%);
     z-index: 5;
-    transform: skewY(-1deg); /* Tela levemente inclinada estilo HUD de luta */
+    pointer-events: none;
 }
 
-h1 {
+/* ==========================================================================
+   3. SISTEMA DE ILUMINAÇÃO E PARTÍCULAS EM 3D
+   ========================================================================== */
+.smoke-layer-1, .smoke-layer-2 {
+    position: absolute;
+    width: 250%; height: 250%;
+    top: -75%; left: -75%;
+    pointer-events: none;
+    opacity: 0.7;
+}
+.smoke-layer-1 {
+    background: radial-gradient(circle at 35% 45%, rgba(255, 0, 60, 0.06), transparent 45%);
+    z-index: 1;
+    animation: driftSmokeClockwise 40s linear infinite;
+}
+.smoke-layer-2 {
+    background: radial-gradient(circle at 65% 55%, rgba(0, 240, 255, 0.04), transparent 40%);
+    z-index: 2;
+    animation: driftSmokeCounter 30s linear infinite;
+}
+
+.lightning-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 0, 60, 0.3) 0%, transparent 75%);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+    animation: demonicStorm 15s infinite ease-in-out;
+}
+
+/* Círculos de Invocação Rúnicos */
+.demonic-seal {
+    position: absolute;
+    width: 700px; height: 700px;
+    border: 2px dashed rgba(255, 0, 60, 0.04);
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+}
+.seal-left {
+    left: -300px; top: -200px;
+    border-right-color: rgba(255, 0, 60, 0.15);
+    animation: rotateSeal 80s linear infinite;
+}
+.seal-right {
+    right: -300px; bottom: -200px;
+    border-left-color: rgba(0, 240, 255, 0.12);
+    animation: rotateSealReverse 60s linear infinite;
+}
+
+/* Red Orbs e Cinzas Voláteis */
+.orbs-container {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+.orb {
+    position: absolute;
+    bottom: -50px;
+    background: radial-gradient(circle, #fff 0%, var(--dmc-neon-red) 50%, transparent 80%);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--dmc-neon-red), 0 0 40px var(--dmc-crimson);
+    animation: riseOrb 12s infinite linear;
+}
+.orb-1 { left: 5%; width: 12px; height: 12px; animation-duration: 9s; animation-delay: 1s; }
+.orb-2 { left: 18%; width: 6px; height: 6px; animation-duration: 14s; animation-delay: 4s; opacity: 0.5; }
+.orb-3 { left: 28%; width: 16px; height: 16px; animation-duration: 11s; animation-delay: 0s; filter: blur(2px); }
+.orb-4 { left: 72%; width: 8px; height: 8px; animation-duration: 10s; animation-delay: 3s; }
+.orb-5 { left: 85%; width: 20px; height: 20px; animation-duration: 16s; animation-delay: 2s; filter: blur(3px); }
+.orb-6 { left: 93%; width: 10px; height: 10px; animation-duration: 12s; animation-delay: 6s; }
+
+.ash {
+    position: absolute;
+    bottom: -30px;
+    background: rgba(255, 255, 255, 0.15);
+    width: 4px; height: 4px;
+    transform: rotate(45deg);
+    animation: riseAsh 8s infinite linear;
+}
+.ash-1 { left: 40%; animation-duration: 7s; animation-delay: 1.5s; }
+.ash-2 { left: 60%; animation-duration: 9s; animation-delay: 3.2s; }
+.ash-3 { left: 78%; animation-duration: 6s; animation-delay: 0.5s; }
+
+/* ==========================================================================
+   4. CONTEXTO DO CARD HUD (INTERFACE PRINCIPAL)
+   ========================================================================== */
+.container {
+    background: linear-gradient(150deg, rgba(8, 8, 12, 0.97) 0%, rgba(18, 4, 7, 0.97) 100%);
+    border: 1px solid rgba(255, 0, 60, 0.2);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.95),
+                0 0 50px rgba(255, 0, 60, 0.08),
+                inset 0 0 30px rgba(0, 0, 0, 0.8);
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    z-index: 10;
+    transform: skewX(-0.5deg);
+    backdrop-filter: blur(12px);
+}
+
+/* Cantoneiras Metálicas de Lâminas Góticas */
+.corner-element {
+    position: absolute;
+    width: 16px; height: 16px;
+    border: 3px solid transparent;
+    pointer-events: none;
+}
+.top-left { top: -2px; left: -2px; border-top-color: var(--dmc-neon-red); border-left-color: var(--dmc-neon-red); }
+.top-right { top: -2px; right: -2px; border-top-color: var(--dmc-neon-red); border-right-color: var(--dmc-neon-red); }
+.bottom-left { bottom: -2px; left: -2px; border-bottom-color: var(--vergil-neon-blue); border-left-color: var(--vergil-neon-blue); }
+.bottom-right { bottom: -2px; right: -2px; border-bottom-color: var(--vergil-neon-blue); border-right-color: var(--vergil-neon-blue); }
+
+.hud-top-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 2px;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   5. TITULOS CROMÁTICOS E DIVISORES GLITCH
+   ========================================================================== */
+.glitch-title {
     font-family: 'Cinzel Decorative', serif;
-    color: #ffffff;
-    font-size: 28px;
-    letter-spacing: 3px;
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--text-white);
+    letter-spacing: 4px;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 3px 3px 0px #b30000;
-    margin-bottom: 2px;
+    text-shadow: 2px 2px 0px var(--dmc-crimson), -1px -1px 0px var(--dmc-abyss);
+    position: relative;
+    text-align: center;
+}
+
+/* Efeito Glitch Fantasma Atrás do Título */
+.glitch-title::before, .glitch-title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: transparent;
+    clip: rect(0, 900px, 0, 0); 
+}
+.glitch-title::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--vergil-neon-blue);
+    animation: titleGlitch 4s infinite linear alternate-reverse;
+}
+.glitch-title::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--dmc-neon-red);
+    animation: titleGlitch 2s infinite linear alternate-reverse;
 }
 
 .subtitle {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: #00d2ff;
+    font-size: 11px;
+    color: var(--vergil-neon-blue);
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 30px;
-    text-shadow: 0 0 8px rgba(0, 210, 255, 0.5);
+    letter-spacing: 2.5px;
+    text-align: center;
+    margin-top: 4px;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
+/* Divisor Tecnológico Estilizado */
+.hud-divider-complex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 30px 0;
+    width: 100%;
+}
+.line-left, .line-right {
+    height: 1px;
+    flex-grow: 1;
+}
+.line-left { background: linear-gradient(90deg, transparent, var(--dmc-neon-red)); }
+.line-right { background: linear-gradient(90deg, var(--vergil-neon-blue), transparent); }
+.center-diamond {
+    width: 6px; height: 6px;
+    background: var(--text-white);
+    transform: rotate(45deg);
+    margin: 0 10px;
+    box-shadow: 0 0 10px var(--text-white);
+}
+
+/* ==========================================================================
+   6. FORMULÁRIOS E INPUTS DE ARMAS / CAIXAS DE SELEÇÃO
+   ========================================================================== */
 .form-group {
+    margin-bottom: 26px;
     text-align: left;
-    margin-bottom: 22px;
-    position: relative;
 }
 
 .form-group label {
     display: block;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: #8e8e93;
+    font-size: 11px;
+    color: var(--text-gray);
+    letter-spacing: 1.5px;
     margin-bottom: 8px;
-    text-transform: uppercase;
+    padding-left: 14px;
+    position: relative;
+}
+.form-group label::before {
+    content: "◢";
+    position: absolute;
+    left: 0; top: -1px;
+    font-size: 8px;
+    color: var(--dmc-neon-red);
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
 }
 
 input {
     width: 100%;
-    padding: 14px 16px;
-    background-color: rgba(5, 5, 5, 0.85);
-    border: 1px solid #333;
-    border-left: 4px solid #ff0055;
+    padding: 16px 20px;
+    background: rgba(4, 4, 6, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-left: 4px solid var(--dmc-neon-red);
     font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-white);
     outline: none;
-    transition: all 0.25s ease;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Efeito Glow Hidráulico ao Focar no Input */
+.input-focus-bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0%; height: 2px;
+    background: var(--vergil-neon-blue);
+    transition: all 0.4s ease;
+    box-shadow: 0 0 10px var(--vergil-neon-blue);
 }
 
 input:focus {
-    border-color: #00d2ff;
-    border-left-color: #00d2ff;
-    background-color: #0a0a0f;
-    box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.2), 0 0 15px rgba(0, 210, 255, 0.1);
+    background: #09090e;
+    border-color: rgba(0, 240, 255, 0.3);
+    border-left-color: var(--vergil-neon-blue);
+    padding-left: 24px;
 }
 
-/* Botão de Ignição - Efeito Devil Trigger Clássico */
-button {
+input:focus + .input-focus-bar {
     width: 100%;
-    padding: 16px;
-    background: #000;
-    color: #fff;
-    border: 2px solid #ff0055;
-    font-family: 'Orbitron', sans-serif;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ==========================================================================
+   7. BOTÃO DE CONTROLE PRINCIPAL (DEVIL TRIGGER BUTTON)
+   ========================================================================== */
+.trigger-btn {
+    width: 100%;
+    padding: 20px;
+    background: transparent;
+    border: 2px solid var(--dmc-neon-red);
+    color: var(--text-white);
     font-size: 14px;
     font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-    margin-top: 10px;
+    transition: all 0.2s ease;
 }
 
-button::before {
+.btn-text {
+    position: relative;
+    z-index: 3;
+}
+
+.trigger-btn::before {
     content: '';
     position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transition: all 0.4s ease;
+    inset: 0;
+    background: var(--dmc-neon-red);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
 }
 
-button:hover {
-    background: #ff0055;
-    box-shadow: 0 0 25px #ff0055;
-    text-shadow: 0 0 5px #fff;
+.trigger-btn:hover {
+    border-color: #fff;
+    box-shadow: 0 0 35px rgba(255, 0, 60, 0.5);
 }
 
-button:hover::before {
-    left: 100%;
+.trigger-btn:hover::before {
+    transform: translateX(0);
 }
 
-/* Painel de Customização / Upgrade de Moeda */
+.trigger-btn:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   8. COMPARTIMENTO DE RESULTADO (UPGRADE UNLOCKED)
+   ========================================================================== */
 .resultado-box {
-    margin-top: 25px;
-    padding: 20px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(20,5,5,0.9) 100%);
-    border: 1px solid #ff0055;
+    margin-top: 32px;
+    background: linear-gradient(180deg, rgba(2,2,4,0.95) 0%, rgba(26,2,6,0.95) 100%);
+    border: 1px solid rgba(255, 0, 60, 0.3);
+    padding: 2px; /* Espaço da sub-borda */
     position: relative;
     display: none;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+    animation: dmcImpact 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.resultado-internal {
+    background: #050508;
+    padding: 22px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    animation: impactBlast 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
 }
 
 .label-res {
     font-family: 'Share Tech Mono', monospace;
     font-size: 11px;
-    color: #ff0055;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
+    color: var(--dmc-neon-red);
+    letter-spacing: 4px;
+    margin-bottom: 6px;
 }
 
 .valor-res {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 28px;
-    color: #fff;
+    font-size: 32px;
     font-weight: 900;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 8px #ff0055;
+    color: var(--text-white);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4),
+                 0 0 25px var(--dmc-neon-red);
 }
 
-/* RANKING SSS - Easter Egg de Pontuação na Conversão */
+/* ==========================================================================
+   9. COMBO RANKING COMPONENT (SSS RANK BADGE)
+   ========================================================================== */
 .rank-badge {
     position: absolute;
-    top: -15px;
-    right: -10px;
-    background: #00d2ff;
+    top: -22px;
+    right: -15px;
+    background: var(--vergil-neon-blue);
     color: #000;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
     font-weight: 900;
-    padding: 4px 8px;
-    transform: rotate(5deg);
-    box-shadow: 0 0 15px #00d2ff;
-    letter-spacing: 1px;
-    animation: blinkRank 0.8s infinite steps(2);
+    font-size: 14px;
+    padding: 6px 16px;
+    transform: rotate(5deg) skewX(-8deg);
+    border: 2px solid var(--text-white);
+    box-shadow: 0 0 25px var(--vergil-neon-blue), 4px 4px 0px #002233;
+    letter-spacing: 2px;
+    z-index: 50;
+    animation: rankPulse 0.5s infinite steps(2);
 }
 
-/* Links de Navegação Inferiores (Estilo File Select) */
+/* ==========================================================================
+   10. MENU DE NAVEGAÇÃO INFERIOR (MISSION SELECT SELECTOR)
+   ========================================================================== */
 .navegacao {
     display: flex;
     justify-content: space-between;
-    margin-top: 30px;
-    border-top: 1px dashed #333;
-    padding-top: 20px;
+    margin-top: 35px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    padding-top: 25px;
+    gap: 16px;
 }
 
 .nav-btn {
     font-family: 'Share Tech Mono', monospace;
-    width: 46%;
-    padding: 12px;
-    background: rgba(10, 10, 15, 0.6);
-    border: 1px solid #00d2ff;
-    color: #00d2ff;
+    width: 48%;
+    padding: 15px;
+    background: rgba(6, 8, 12, 0.75);
+    border: 1px solid var(--vergil-dark-blue);
+    color: var(--vergil-neon-blue);
     text-decoration: none;
     text-align: center;
     font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
+    font-weight: bold;
+    letter-spacing: 2px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-btn:hover {
-    background: rgba(0, 210, 255, 0.15);
-    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
-    text-shadow: 0 0 4px #00d2ff;
+    background: rgba(0, 240, 255, 0.08);
+    border-color: var(--vergil-neon-blue);
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+    text-shadow: 0 0 5px var(--vergil-neon-blue);
+    transform: translateY(-3px);
+}
+.nav-btn:active { transform: translateY(0); }
+
+.nav-arrow {
+    font-size: 10px;
+    vertical-align: middle;
 }
 
-/* Animações mecânicas de DMC */
-@keyframes impactBlast {
-    0% { transform: scale(0.6) rotate(-3deg); filter: brightness(3); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); filter: brightness(1); opacity: 1; }
+/* ==========================================================================
+   11. CONTROLADOR DE ANIMAÇÕES INTERNAS (KEYFRAMES)
+   ========================================================================== */
+@keyframes driftSmokeClockwise {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate(-8%, -10%) rotate(180deg) scale(1.1); }
+    100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+}
+@keyframes driftSmokeCounter {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate(10%, 6%) rotate(-180deg) scale(1.15); }
+    100% { transform: translate(0, 0) rotate(-360deg) scale(1); }
 }
 
-@keyframes blinkRank {
-    0%, 100% { background: #00d2ff; box-shadow: 0 0 15px #00d2ff; }
-    50% { background: #ff0055; box-shadow: 0 0 15px #ff0055; color: #fff; }
+@keyframes demonicStorm {
+    0%, 93%, 96%, 98%, 100% { opacity: 0; }
+    94%, 97% { opacity: 0.3; }
+    95% { opacity: 0.05; }
+}
+
+@keyframes rotateSeal {
+    from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+}
+@keyframes rotateSealReverse {
+    from { transform: rotate(0deg); } to { transform: rotate(-360deg); }
+}
+
+@keyframes riseOrb {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.8; }
+    85% { opacity: 0.8; }
+    100% { transform: translateY(-115vh) scale(1.3); opacity: 0; }
+}
+@keyframes riseAsh {
+    0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+    20% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-115vh) rotate(225deg); opacity: 0; }
+}
+
+@keyframes dmcImpact {
+    0% { transform: scale(0.5) rotateX(50deg); filter: brightness(3); opacity: 0; }
+    100% { transform: scale(1) rotateX(0deg); filter: brightness(1); opacity: 1; }
+}
+
+@keyframes rankPulse {
+    0%, 100% { background: var(--vergil-neon-blue); box-shadow: 0 0 25px var(--vergil-neon-blue); color: #000; }
+    50% { background: var(--dmc-neon-red); box-shadow: 0 0 30px var(--dmc-neon-red); color: #fff; border-color: #ff88aa; }
+}
+
+@keyframes titleGlitch {
+    0% { clip: rect(42px, 9999px, 44px, 0); }
+    5% { clip: rect(12px, 9999px, 59px, 0); }
+    10% { clip: rect(48px, 9999px, 29px, 0); }
+    15% { clip: rect(0, 900px, 0, 0); }
+    100% { clip: rect(0, 900px, 0, 0); }
 }
