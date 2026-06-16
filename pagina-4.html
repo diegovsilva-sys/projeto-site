@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCCP Multi-Conversor</title>
+    <!-- Importando fonte esportiva e moderna do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pagina-4.css">
+</head>
+<body>
+
+    <!-- Mosaico de Jogadores no Background -->
+    <div class="bg-mosaico">
+        <div class="jogador-card" style="background-image: url('https://images.unsplash.com/photo-1518098268026-4e43a1a009de?q=80&w=600');"></div>
+        <div class="jogador-card" style="background-image: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600');"></div>
+        <div class="jogador-card" style="background-image: url('https://images.unsplash.com/photo-1540747737956-37872e7e5592?q=80&w=600');"></div>
+        <div class="jogador-card" style="background-image: url('https://images.unsplash.com/photo-1577223625856-7dbed291bf9e?q=80&w=600');"></div>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <!-- Menu Lateral -->
+    <nav>
+        <div class="logo-area">
+            <div class="escudo-fake">🦅</div>
+            <h1>SCCP</h1>
+            <span>CONVERSOR DIGITAL</span>
+        </div>
+        <div class="menu-links">
+            <button class="menu-btn" onclick="mudarAba('unidade')">
+                <span class="icon">📏</span> Unidades
+            </button>
+            <button class="menu-btn" onclick="mudarAba('temperatura')">
+                <span class="icon">🌡️</span> Temperatura
+            </button>
+            <button class="menu-btn" onclick="mudarAba('moeda')">
+                <span class="icon">💵</span> Moedas
+            </button>
+            <button class="menu-btn active" onclick="mudarAba('tempo')">
+                <span class="icon">⏱️</span> Tempo
+            </button>
+        </div>
+        <div class="nav-footer">
+            <p>Vai Corinthians! 🏴🏳️</p>
+        </div>
+    </nav>
+
+    <!-- Área Principal -->
+    <main>
+        <div class="card-conversor">
+            
+            <!-- ABA UNIDADE -->
+            <div id="unidade" class="container-abas">
+                <h2>Conversor de Unidades</h2>
+                <div class="placeholder-content">
+                    <p class="aviso">Área em aquecimento no banco de reservas...</p>
+                </div>
+            </div>
+
+            <!-- ABA TEMPERATURA -->
+            <div id="temperatura" class="container-abas">
+                <h2>Conversor de Temperatura</h2>
+                <div class="placeholder-content">
+                    <p class="aviso">Área em aquecimento no banco de reservas...</p>
+                </div>
+            </div>
+
+            <!-- ABA MOEDA -->
+            <div id="moeda" class="container-abas">
+                <h2>Conversor de Moedas</h2>
+                <div class="placeholder-content">
+                    <p class="aviso">Área em aquecimento no banco de reservas...</p>
+                </div>
+            </div>
+
+            <!-- ABA TEMPO (FUNCIONAL) -->
+            <div id="tempo" class="container-abas active">
+                <div class="badge">TEMPO</div>
+                <h2>Minutos ➔ Segundos</h2>
+                <p class="subtitulo">Mais veloz que o contra-ataque do Coringão.</p>
+                
+                <div class="input-group">
+                    <label for="minutos">Digite os Minutos</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="minutos" placeholder="Ex: 90" min="0">
+                        <span class="input-suffix">MIN</span>
+                    </div>
+                </div>
+
+                <button class="btn-converter" onclick="converterTempo()">Calcular Segundos</button>
+
+                <div class="resultado" id="resultadoTempo" style="display: none;">
+                    <p class="resultado-label">Resultado Convertido</p>
+                    <div class="resultado-valores">
+                        <span id="valorMinutos">0</span> min = <span id="valorSegundos" class="destaque-ouro">0</span> seg
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="pagina-4.js"></script>
+</body>
+</html>
