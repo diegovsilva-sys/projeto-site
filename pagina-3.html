@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divinity Statue - Conversor</title>
+    <link rel="stylesheet" href="pagina-3.css">
+</head>
+<body>
+    <!-- SISTEMA DE AMBIENTAÇÃO GRÁFICA DMC -->
+    <div class="ambient-darkness"></div>
+    <div class="smoke-layer-1"></div>
+    <div class="smoke-layer-2"></div>
+    <div class="lightning-flash"></div>
+    <div class="vignette-heavy"></div>
+    
+    <!-- Glifos Mágicos de Fundo -->
+    <div class="demonic-seal seal-left"></div>
+    <div class="demonic-seal seal-right"></div>
+
+    <!-- Sistema de Partículas e Red Orbs Dinâmicas -->
+    <div class="orbs-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+        <div class="orb orb-6"></div>
+        <div class="orb orb-7"></div>
+        <div class="orb orb-8"></div>
+        <div class="ash ash-1"></div>
+        <div class="ash ash-2"></div>
+        <div class="ash ash-3"></div>
+    </div>
+
+    <!-- RECIPIENTE PRINCIPAL (HUD DE CUSTOMIZAÇÃO) -->
+    <div class="container">
+        <!-- Detalhes de Interface Angular nos cantos -->
+        <div class="corner-element top-left"></div>
+        <div class="corner-element top-right"></div>
+        <div class="corner-element bottom-left"></div>
+        <div class="corner-element bottom-right"></div>
+
+        <div class="hud-top-tag">DIVINITY APPARATUS V5.26</div>
+
+        <h1 class="glitch-title" data-text="DIVINITY SHOP">DIVINITY SHOP</h1>
+        <div class="subtitle">TRANSMUTADOR DE RED ORBS & CRÉDITOS</div>
+        
+        <div class="hud-divider-complex">
+            <div class="line-left"></div>
+            <div class="center-diamond"></div>
+            <div class="line-right"></div>
+        </div>
+
+        <!-- Área de Inputs Mecânicos -->
+        <div class="form-group">
+            <label for="usd">QUANTIDADE EM DÓLAR [USD $]</label>
+            <div class="input-wrapper">
+                <input type="number" id="usd" placeholder="0.00" step="0.01" autocomplete="off">
+                <div class="input-focus-bar"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="cotacao">TAXA DE COTAÇÃO ATUAL [BRL R$]</label>
+            <div class="input-wrapper">
+                <input type="number" id="cotacao" placeholder="5.50" step="0.01" value="5.50" autocomplete="off">
+                <div class="input-focus-bar"></div>
+            </div>
+        </div>
+
+        <!-- Botão de Ativação do Devil Trigger -->
+        <button class="trigger-btn" onclick="converterMoeda()">
+            <span class="btn-text">TRIGGER CONVERSION</span>
+            <span class="btn-glitch-bg"></span>
+        </button>
+
+        <!-- Caixa de Resultado Customizada -->
+        <div id="painel-resultado" class="resultado-box">
+            <div class="resultado-internal">
+                <span class="label-res">// DIVISA ADQUIRIDA //</span>
+                <span id="resultado" class="valor-res">R$ 0,00</span>
+            </div>
+        </div>
+
+        <!-- Menu de Navegação Estilo Seleção de Missão -->
+        <div class="navegacao">
+            <a href="pagina-2.html" class="nav-btn btn-prev">
+                <span class="nav-arrow">◀</span> MISSION 02
+            </a>
+            <a href="pagina-4.html" class="nav-btn btn-next">
+                MISSION 04 <span class="nav-arrow">▶</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="pagina-3.js"></script>
+</body>
+</html>
