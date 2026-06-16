@@ -1,25 +1,20 @@
 let valorDigitado = "0";
 
 function pressionarBotao(valor, event) {
-    // 1. ANIMAÇÕES NO BOTÃO APERTOADO
     const botao = event.currentTarget;
     aplicarEfeitosVisuais(botao);
 
-    // 2. CONTROLE DO INPUT VIRTUAL
     if (valor === 'C') {
         valorDigitado = "0";
     } else {
         if (valorDigitado === "0") {
             valorDigitado = valor;
         } else {
-            // Limita a 5 dígitos para manter a interface perfeita
             if (valorDigitado.length < 5) {
                 valorDigitado += valor;
             }
         }
     }
-
-    // Atualiza o visor mostrando a unidade Kelvin
     document.getElementById('visor-temp').innerHTML = `${valorDigitado} <span class="unit-label">K</span>`;
 }
 
@@ -47,10 +42,8 @@ function converterTemperatura(event) {
         return;
     }
 
-    // FÓRMULA INTELIGENTE: Celsius = Kelvin - 273.15
     const celsius = (kelvin - 273.15).toFixed(2);
 
-    // Personalização do veredito dependendo do calor gerado
     let statusCombate = "❄️ O frio extremo de Helheim permanece congelante.";
     if (celsius > 0) {
         statusCombate = "🔥 As chamas de Muspelheim despertaram!";
@@ -58,7 +51,6 @@ function converterTemperatura(event) {
         statusCombate = "⚔️ Fúria total! O calor é capaz de derreter as correntes do Caos!";
     }
 
-    // Injeta os dados na caixa de diálogo mitológica
     container.innerHTML = `
         <div class="main-result">
             Chamas Despertadas: <strong>${celsius} °C</strong>
